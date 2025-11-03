@@ -13,7 +13,7 @@ describe('Thing', () => {
 
     Object.entries(_stories)
       .filter(([name]) => name !== 'default')
-      .forEach(([_, story]) => {
+      .forEach(([, story]) => {
         const Story: any = story;
         const args = Story['args'];
         const result = render(<Story {...args} />);

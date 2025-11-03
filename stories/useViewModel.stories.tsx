@@ -24,6 +24,7 @@ function LifecycleToggleHOC<T>(
   Cmp: React.FunctionComponent<T>
 ): React.FunctionComponent & BaseAnnotations<unknown, unknown> {
   return ((props: T) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [mount, setMount] = useState(true);
 
     return (
@@ -627,6 +628,126 @@ export const WithReactiveProps = () => {
 };
 
 /// ------------------------------------------
+// Example of view-model with optional props
+//
+interface OptionalPropsExample {
+  userId?: string;
+  title: string | undefined;
+  subTitle?: string;
+
+}
+
+class OptionalPropsViewModel extends ViewModel<OptionalPropsExample> {
+  constructor(props: OptionalPropsExample) {
+    super(props);
+  }
+
+  @computed
+  get displayText() {
+    const user = this.props.userId || 'Guest';
+    const title = this.props.title || 'Untitled';
+    return `${title} by ${user}`;
+  }
+}
+
+const OptionalPropsComponent = observer(
+  (props: {
+    userId: string | undefined
+    title?: string
+    subTitle?: string;
+
+  }) => {
+    const viewModel = useViewModel(OptionalPropsViewModel, {
+      userId: props.userId,
+      title: props.title,
+      subTitle: props.subTitle
+    });
+
+    return (
+      <div>
+        <p>{viewModel.displayText}</p>
+      </div>
+    );
+  }
+);
+
+export const WithOptionalProps = () => {
+  const [userId, setUserId] = useState<string>('user-123');
+  const [title, setTitle] = useState<string>('My Article');
+
+  return (
+    <>
+      <div>
+        <label>
+          User ID:
+          <input
+            type="text"
+            value={userId}
+            onChange={e => setUserId(e.target.value)}
+            placeholder="Enter user ID..."
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Title:
+          <input
+            type="text"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="Enter title..."
+          />
+        </label>
+      </div>
+      <OptionalPropsComponent userId={userId} title={title} />
+    </>
+  );
+};
+
+WithOptionalProps.parameters = {
+  docs: {
+    source: {
+      code: `
+interface OptionalPropsExample {
+  userId?: string;
+  title?: string;
+}
+
+class OptionalPropsViewModel extends ViewModel<OptionalPropsExample> {
+  constructor(props: OptionalPropsExample) {
+    super(props);
+  }
+
+  @computed
+  get displayText() {
+    const user = this.props.userId || 'Guest';
+    const title = this.props.title || 'Untitled';
+    return \`\${title} by \${user}\`;
+  }
+}
+
+const OptionalPropsComponent = observer(
+  (props: { userId?: string; title?: string }) => {
+    const viewModel = useViewModel(OptionalPropsViewModel, {
+      userId: props.userId,
+      title: props.title,
+    });
+
+    return (
+      <div>
+        <p>{viewModel.displayText}</p>
+      </div>
+    );
+  }
+);
+      `,
+      language: 'jsx',
+      type: 'auto',
+    },
+  },
+};
+
+/// ------------------------------------------
 // Example of view-models with Dependency Injection
 //
 type User = {
@@ -711,7 +832,7 @@ class UsersStore {
 const userStore = new UsersStore();
 
 interface AdvancedDIViewModelProps {
-  userId: string;
+  userId?: string;
 }
 class AdvancedDIViewModel {
   @observable.ref

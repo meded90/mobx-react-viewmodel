@@ -31,3 +31,19 @@ export type IViewModelClass<
     ? { new (props: P, ...args: Args): T }
     : { new (props: P, ...args: Args): T } // HACK: this place should be { new (props: P): T }
   : { new (): T };
+/**
+ * Makes optional properties accept undefined explicitly
+ * This is needed for exactOptionalPropertyTypes compatibility
+ */
+/* eslint-disable */
+type OptionalKeys<T extends ViewModelProps> = {
+  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
+}[keyof T]
+
+type RequiredKeys<T extends ViewModelProps> = Exclude<keyof T, OptionalKeys<T>>
+
+export type ViewModelHookProps<P extends ViewModelProps> = [OptionalKeys<P>] extends [never]
+  ? P
+  : { [K in RequiredKeys<P>]: P[K] } & { [K in OptionalKeys<P>]?: P[K] | undefined }
+
+

@@ -5,6 +5,7 @@ import {
   IViewModelClass,
   ViewModelProps,
   ViewModelArgs,
+  ViewModelHookProps,
 } from './typings';
 
 /// ------------------------------------------
@@ -48,18 +49,26 @@ export function useViewModel<T extends IViewModel>(
 ): T;
 export function useViewModel<T extends IViewModel<P>, P extends ViewModelProps>(
   viewModelClass: IViewModelClass<T, P>,
-  props: P
+  props: ViewModelHookProps<P>
 ): T;
 export function useViewModel<
   T extends IViewModel<P>,
   P extends ViewModelProps,
   Args extends ViewModelArgs
->(viewModelClass: IViewModelClass<T, P, Args>, props: P, args: Args): T;
+>(
+  viewModelClass: IViewModelClass<T, P, Args>,
+  props: ViewModelHookProps<P>,
+  args: Args
+): T;
 export function useViewModel<
   T extends IViewModel<P>,
   P extends ViewModelProps,
   Args extends ViewModelArgs
->(viewModelClass: IViewModelClass<T, P, Args>, props?: P, args?: Args): T {
+>(
+  viewModelClass: IViewModelClass<T, P, Args>,
+  props?: ViewModelHookProps<P>,
+  args?: Args
+): T {
   // Instance view-model only once on Mount via class
   const [viewModel] = useState(() =>
     props

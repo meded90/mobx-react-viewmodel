@@ -15,15 +15,16 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src test stories --ext .ts,.tsx",
     "lint-staged": "lint-staged",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "docs": "start-storybook --docs --no-manager-cache",
-    "build-docs": "build-storybook --docs"
+    "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
+    "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook",
+    "docs": "NODE_OPTIONS=--openssl-legacy-provider start-storybook --docs --no-manager-cache",
+    "build-docs": "NODE_OPTIONS=--openssl-legacy-provider build-storybook --docs"
   },
   "peerDependencies": {
     "mobx": ">=6",
@@ -38,7 +39,7 @@
   "lint-staged": {
     "*.ts*": [
       "prettier --config .prettierrc --write",
-      "tsdx lint --fix"
+      "eslint --fix"
     ]
   },
   "repository": {
@@ -73,7 +74,12 @@
     "@testing-library/react": "^14.0.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "babel-loader": "^9.1.2",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "mobx": "^6.8.0",
