@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { computed, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 
 import { useViewModelFactory } from '../src/useViewModel';
+import { ViewModel } from '../src';
 
 export default {
   title: 'useViewModelFactory',
@@ -134,6 +135,134 @@ const AdvancedDIExample = observer(function AdvancedDIExample$() {
     </div>
   );
 });
+      `,
+      language: 'jsx',
+      type: 'auto',
+    },
+  },
+};
+
+
+
+/// ------------------------------------------
+// Example of view-model with optional props
+//
+interface OptionalPropsExample {
+  userId?: string;
+  title: string | undefined;
+  subTitle?: string;
+
+}
+
+class OptionalPropsViewModel extends ViewModel<OptionalPropsExample> {
+  constructor(props: OptionalPropsExample) {
+    super(props);
+  }
+
+  @computed
+  get displayText() {
+    const user = this.props.userId || 'Guest';
+    const title = this.props.title || 'Untitled';
+    return `${title} by ${user}`;
+  }
+}
+
+const OptionalPropsComponent = observer(
+  (props: {
+    userId: string | undefined
+    title?: string
+    subTitle?: string;
+
+  }) => {
+    const viewModel = useViewModelFactory((p: OptionalPropsExample) => new OptionalPropsViewModel(p), {
+      userId: props.userId,
+      title: props.title,
+      subTitle: props.subTitle
+    });
+
+    return (
+      <div>
+        <p>{viewModel.displayText}</p>
+      </div>
+    );
+  }
+);
+
+export const WithOptionalProps = () => {
+  const [userId, setUserId] = useState<string>('user-123');
+  const [title, setTitle] = useState<string>('My Article');
+
+  return (
+    <>
+      <div>
+        <label>
+          User ID:
+          <input
+            type="text"
+            value={userId}
+            onChange={e => setUserId(e.target.value)}
+            placeholder="Enter user ID..."
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Title:
+          <input
+            type="text"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="Enter title..."
+          />
+        </label>
+      </div>
+      <OptionalPropsComponent userId={userId} title={title} />
+    </>
+  );
+};
+
+WithOptionalProps.parameters = {
+  docs: {
+    source: {
+      code: `
+interface OptionalPropsExample {
+  userId?: string;
+  title: string | undefined;
+  subTitle?: string;
+}
+
+class OptionalPropsViewModel extends ViewModel<OptionalPropsExample> {
+  constructor(props: OptionalPropsExample) {
+    super(props);
+  }
+
+  @computed
+  get displayText() {
+    const user = this.props.userId || 'Guest';
+    const title = this.props.title || 'Untitled';
+    return \`\${title} by \${user}\`;
+  }
+}
+
+const OptionalPropsComponent = observer(
+  (props: {
+    userId: string | undefined
+    title?: string
+    subTitle?: string;
+  }) => {
+    const viewModel = useViewModelFactory((p: OptionalPropsExample) => new OptionalPropsViewModel(p), {
+      userId: props.userId,
+      title: props.title,
+      subTitle: props.subTitle
+    });
+
+    return (
+      <div>
+        <p>{viewModel.displayText}</p>
+      </div>
+    );
+  }
+);
       `,
       language: 'jsx',
       type: 'auto',

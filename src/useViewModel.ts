@@ -85,17 +85,17 @@ export function useViewModel<
 export function useViewModelFactory<T extends IViewModel | AnyModel>(
   factory: () => T
 ): T;
-export function useViewModelFactory<T extends IViewModel<P>, P extends {}>(
-  factory: (props: P) => T,
-  props: P
-): T;
-export function useViewModelFactory<T extends IViewModel<P>, P extends {}>(
-  factory: (props?: P) => T,
-  props?: P
-): T {
+export function useViewModelFactory<
+  T extends IViewModel<P>,
+  P extends ViewModelProps
+>(factory: (props: P) => T, props: ViewModelHookProps<P>): T;
+export function useViewModelFactory<
+  T extends IViewModel<P>,
+  P extends ViewModelProps
+>(factory: (props?: P) => T, props?: ViewModelHookProps<P>): T {
   // Instance view-model only once on Mount via factory-function
-  const [viewModel] = useState(() => factory(props));
-  useViewModelInternal(viewModel, props);
+  const [viewModel] = useState(() => factory(props as P));
+  useViewModelInternal(viewModel, props as P);
 
   return viewModel;
 }
