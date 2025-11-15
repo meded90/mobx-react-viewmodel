@@ -1,35 +1,14 @@
 module.exports = {
-  root: true,
   parser: '@typescript-eslint/parser',
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+  },
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
+      impliedStrict: true,
     },
-    project: './tsconfig.json',
-  },
-  env: {
-    browser: true,
-    es6: true,
-    node: true,
-  },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-  ],
-  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-  rules: {
-    'react/react-in-jsx-scope': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-empty-object-type': 'off',
-    '@typescript-eslint/no-explicit-any': 'warn',
   },
 };

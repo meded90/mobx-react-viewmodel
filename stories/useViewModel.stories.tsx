@@ -24,7 +24,6 @@ function LifecycleToggleHOC<T>(
   Cmp: React.FunctionComponent<T>
 ): React.FunctionComponent & BaseAnnotations<unknown, unknown> {
   return ((props: T) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [mount, setMount] = useState(true);
 
     return (
